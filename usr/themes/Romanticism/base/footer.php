@@ -77,9 +77,6 @@
     }
     </script>
 
-    <script src="<?php $this->options->themeUrl('assets/js/md5.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('assets/js/preheadicon.js?v=2.2'); ?>"></script>
-
     <!-- 自定义JS -->
     <?php if(!empty($this->options->AKAROMcustomJs)): ?>
         <script type="text/javascript">
