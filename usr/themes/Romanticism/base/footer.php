@@ -46,16 +46,16 @@
         });
     </script>
 
-    <script src="<?php $this->options->themeUrl('config/mdui/js/mdui.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/jquery.min.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/mdui/js/mdui.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/jquery.js'); ?>"></script>
     
-    <script src="<?php $this->options->themeUrl('config/js/listLazyload.js?v=2.2'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/tagIcon.js?v=2.2'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/customStyle.js?v=2.2'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/returntop.js?v=2.2'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/prism.highlight.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/listLazyload.js?v=2.2'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/tagIcon.js?v=2.2'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/customStyle.js?v=2.2'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/returntop.js?v=2.2'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/prism.highlight.js'); ?>"></script>
 
-    <script src="<?php $this->options->themeUrl('config/js/jquery.fancybox.min.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/jquery.fancybox.js'); ?>"></script>
     <script>
         $(document).ready(function () {
             $( ".fancybox").fancybox();
@@ -63,10 +63,10 @@
     </script>
 
     <?php if (!empty($this->options->AKAROMfucset) && in_array('AKAROMindexloading', $this->options->AKAROMfucset)): ?>
-    <script type="text/javascript" src="<?php $this->options->themeUrl('config/js/loading.js?v=2.2'); ?>"></script>
+    <script type="text/javascript" src="<?php $this->options->themeUrl('assets/js/loading.js?v=2.2'); ?>"></script>
     <?php endif; ?>
     
-    <script src="<?php $this->options->themeUrl('config/js/OwO.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/OwO.js'); ?>"></script>
     <script>
     function OwO_show() {
         if ($(".OwO-items").css("max-height") == '0px') {
@@ -77,8 +77,8 @@
     }
     </script>
 
-    <script src="<?php $this->options->themeUrl('config/js/md5.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('config/js/preheadicon.js?v=2.2'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/md5.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/preheadicon.js?v=2.2'); ?>"></script>
 
     <!-- 自定义JS -->
     <?php if(!empty($this->options->AKAROMcustomJs)): ?>

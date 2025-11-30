@@ -18,8 +18,8 @@
 <!--Sidebar Start-->
 <div class="mdui-drawer mdui-drawer-close blur" id="mainsidebar">
 
-<div class="mdui-grid-tile sidebarimg" style="background-image: url('<?php if(empty($this->options->AKAROMsidebarimg)): ?><?php $this->options->themeUrl('config/style/img/default/sidebar.webp'); ?><?php else: ?><?php $this->options->AKAROMsidebarimg(); ?><?php endif; ?>');">
-  <img class="headicon" onclick="window.location.href='<?php $this->options ->siteUrl('/admin'); ?>'" title="headicon" src="<?php if(empty($this->options->AKAROMlogoUrl)): ?><?php $this->options->themeUrl('config/style/img/default/user.jpg'); ?><?php else: ?><?php $this->options->AKAROMlogoUrl(); ?><?php endif; ?>">
+<div class="mdui-grid-tile sidebarimg" style="background-image: url('<?php if(empty($this->options->AKAROMsidebarimg)): ?><?php $this->options->themeUrl('pictures/default/sidebar.webp'); ?><?php else: ?><?php $this->options->AKAROMsidebarimg(); ?><?php endif; ?>');">
+  <img class="headicon" onclick="window.location.href='<?php $this->options ->siteUrl('/admin'); ?>'" title="headicon" src="<?php if(empty($this->options->AKAROMlogoUrl)): ?><?php $this->options->themeUrl('pictures/default/user.jpg'); ?><?php else: ?><?php $this->options->AKAROMlogoUrl(); ?><?php endif; ?>">
   <div class="mdui-grid-tile-actions">
     <h3 class="easysee chameleon" style="white-space:pre-wrap;"><?php $this->options->title(); ?></h3>
 <br>

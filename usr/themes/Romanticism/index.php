@@ -16,7 +16,7 @@
  * @date 2025-08-20
  **/
 
- $this->need('config/header.php');
+ $this->need('base/header.php');
  ?>
 
 <?php /*加载动画*/ if (!empty($this->options->AKAROMfucset) && in_array('AKAROMindexloading', $this->options->AKAROMfucset)): ?>
@@ -51,7 +51,7 @@
 
 
 <!--首页主题图-->
-<div class="mdui-shadow-0 indeximgcard mdui-card indeximg" id="indeximg" style="background-image: url('<?php if(empty($this->options->AKAROMindeximg)): ?><?php $this->options->themeUrl('config/style/img/default/indeximg.webp'); ?><?php else: ?><?php $this->options->AKAROMindeximg(); ?><?php endif; ?>');">
+<div class="mdui-shadow-0 indeximgcard mdui-card indeximg" id="indeximg" style="background-image: url('<?php if(empty($this->options->AKAROMindeximg)): ?><?php $this->options->themeUrl('pictures/default/indeximg.webp'); ?><?php else: ?><?php $this->options->AKAROMindeximg(); ?><?php endif; ?>');">
 <div class="mdui-card-media-covered indeximgcard mdui-valign ">
       <div class="mdui-center mdui-card-primary easysee">
       <h1 class="mdui-typo-display-1 titlegap">
@@ -126,7 +126,7 @@ foreach ($stickynumbers as $stickynum): ?>
             <?php if ($post->fields->AKAROMarticleimg != null): ?>
             <?php $post->fields->AKAROMarticleimg(); ?>
             <?php else: ?>
-            <?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("config/style/img/default/cover/{$randomNum}.webp"); ?>
+            <?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>
             <?php endif; ?>
           " loading="lazy">
 
@@ -215,11 +215,11 @@ foreach ($stickynumbers as $stickynum): ?>
 <div class="yuan articlelistcard mdui-card mdui-valign mdui-text-center articlelistimg mdui-shadow-0 AKAROMlazyload" 
 data-bg="
 <?php if (($this->cid == 1) && ($this->fields->AKAROMarticleimg == null)): ?>
-<?php $this->options->themeUrl('config/style/img/default/Romanticism2theme-empty.webp'); ?>
+<?php $this->options->themeUrl('pictures/default/Romanticism2theme-empty.webp'); ?>
 <?php elseif ($this->fields->AKAROMarticleimg != null): ?>
 <?php $this->fields->AKAROMarticleimg(); ?>
 <?php else: ?>
-<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("config/style/img/default/cover/{$randomNum}.webp"); ?>
+<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>
 <?php endif; ?>
 ">
   <div class="mdui-valign mdui-card-media-covered articlelistcard">
@@ -245,7 +245,7 @@ data-bg="
 <?php //如果找不到搜索内容或无文章
   else: ?>
 
-<div class="yuan articlelistcard mdui-card mdui-valign mdui-text-center articlelistimg mdui-shadow-0" style="background-image: url('<?php $this->options->themeUrl('config/style/img/default/Romanticism2theme-empty.webp'); ?>');">
+<div class="yuan articlelistcard mdui-card mdui-valign mdui-text-center articlelistimg mdui-shadow-0" style="background-image: url('<?php $this->options->themeUrl('pictures/default/Romanticism2theme-empty.webp'); ?>');">
   <div class="mdui-valign mdui-card-media-covered articlelistcard">
       <div class="mdui-card-primary easysee mdui-center">
         <div class="mdui-card-primary-title">
@@ -279,4 +279,4 @@ data-bg="
 <!--主布局容器结束-->
 </div>
 
-<?php $this->need('config/footer.php'); ?>
+<?php $this->need('base/footer.php'); ?>

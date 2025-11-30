@@ -7,7 +7,7 @@ class DPlayerMAX_UpdateUI
     {
         require_once dirname(__DIR__) . '/Plugin.php';
         $ver = DPlayerMAX_Plugin::getVersion();
-        $css = Helper::options()->pluginUrl . '/DPlayerMAX/plugin/update-widget.css';
+        $css = Helper::options()->pluginUrl . '/DPlayerMAX/assets/update-widget.css';
 
         return '<link rel="stylesheet" href="' . $css . '" /><div class="dplayermax-update-widget"><div class="update-header"><h3>更新状态<span class="dplayermax-status-light status-not-checked"></span></h3></div><div class="version-info"><p><strong>当前:</strong> ' . htmlspecialchars($ver) . '</p></div><div class="update-status"><p class="status-message">点击检查更新</p></div><div class="update-actions"><button type="button" id="dplayermax-check-update-btn" class="btn">检查更新</button><button type="button" id="dplayermax-perform-update-btn" class="btn primary" style="display:none">立即更新</button><button type="button" id="dplayermax-force-update-btn" class="btn danger" style="display:none;margin-left:8px">强制更新</button><a id="dplayermax-release-link" href="https://github.com/GamblerIX/DPlayerMAX/tree/main/Changelog" target="_blank" class="btn" style="display:none">更新日志</a><span id="dplayermax-update-status" style="margin-left:10px"></span></div></div>' . self::script();
     }

@@ -36,7 +36,7 @@ error_reporting(0);
 
     <link href="<?php $this->options->AKAROMsign(); ?>" rel="icon" type="image/x-icon"><!--图标-->
 
-    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;900&amp;display=swap" rel="stylesheet">
+
 
     <title><?php $this->archiveTitle(array(
             'category'  =>  _t('分类 %s 下的文章'),
@@ -46,12 +46,12 @@ error_reporting(0);
         ), '', ' - '); ?><?php $this->options->title(); ?></title>
 
     <!-- 使用url函数转换相关路径 -->
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/mdui/css/mdui.min.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/style/romanticism.aka.css?v=2.2'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/style/prism.highlight.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/style/jquery.fancybox.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/style/icon.aka.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('config/style/OwO.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/mdui/css/mdui.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/style/romanticism.aka.css?v=2.2'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/style/prism.highlight.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/style/jquery.fancybox.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/style/icon.aka.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/style/OwO.css'); ?>">
 
     <!-- 自定义CSS -->
     <?php if(!empty($this->options->AKAROMcustomCss)): ?>
@@ -125,7 +125,7 @@ error_reporting(0);
   </div>
 </div>
 
-<?php $this->need('config/sidebar.php');?>
+<?php $this->need('ext/sidebar.php');?>
 
 
 

@@ -15,7 +15,7 @@
  */
 ?>
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('config/header.php'); ?>
+<?php $this->need('base/header.php'); ?>
 
 <div class="mdui-shadow-0 articlecard mdui-card show">
   <div class="mdui-valign articlecard mdui-text-center">
@@ -29,11 +29,11 @@
 
   style="
   <?php if (($this->cid == 1) && ($this->fields->AKAROMarticleimg == null)): ?>
-      background-image: url('<?php $this->options->themeUrl('config/style/img/default/Romanticism2theme-empty.webp'); ?>');
+      background-image: url('<?php $this->options->themeUrl('pictures/default/Romanticism2theme-empty.webp'); ?>');
   <?php elseif ($this->fields->AKAROMarticleimg != null): ?>
       background-image: url('<?php $this->fields->AKAROMarticleimg(); ?>');
   <?php else: ?>
-      background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("config/style/img/default/cover/{$randomNum}.webp"); ?>');
+      background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>');
   <?php endif; ?>
   ">
 
@@ -98,7 +98,7 @@ echo $content;
   <br>
 <?php else: ?>  
 <?php if (!empty($this->options->AKAROMrewardimg)): ?>
-  <?php if ((!empty($this->fields->AKAROMfucsetreward)) || !($this->fields->AKAROMfucsetreward)): ?>
+  <?php if ($this->fields->AKAROMfucsetreward != '1'): ?>
   <span class="akarom-alter-button-valign" mdui-dialog="{target: '#reward'}">
     <span class="akarom-alter-button blur yuan mdui-center">
       <i class="mdui-icon material-icons">thumb_up</i><b>赞赏文章</b>
@@ -125,14 +125,11 @@ echo $content;
 
 
 </div>
-<?php $this->need('config/comments.php'); ?>
+<?php $this->need('base/comments.php'); ?>
 <br>
 </div>
 </div><!--内容结束-->
 </div><!--主布局容器结束-->
 
 
-<?php $this->need('config/footer.php'); ?>
-
-
-
+<?php $this->need('base/footer.php'); ?>

@@ -14,7 +14,7 @@
 ?>
 
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('config/header.php'); ?>
+<?php $this->need('base/header.php'); ?>
 <div class="LDtrans notfoundpage">
     <div class="mdui-card-primary mdui-valign show notfound-box">
         <div class="mdui-card-primary mdui-center">
@@ -27,4 +27,4 @@
     </div>
 </div>
 
-<?php $this->need('config/footer.php'); ?>
+<?php $this->need('base/footer.php'); ?>

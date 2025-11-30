@@ -30,7 +30,7 @@ function themeConfig($form) {  //后台设置界面
             margin-right: -10px;
         }
     </style>
-    <h1><img src="<?php echo Helper::options()->themeUrl.'/config/style/img/icon.png'; ?>">主题设置</h1>
+    <h1><img src="<?php echo Helper::options()->themeUrl.'/pictures/icon.png'; ?>">主题设置</h1>
     <p><button id="checkUpdateBtn" class="btn">检查更新</button> · 当前版本: 2.2 · <a href="https://github.com/akashiwest/Romanticism" target="_blank">Github 文档</a></p>
     <div id="updateStatus"></div>
     <script>
@@ -42,7 +42,7 @@ function themeConfig($form) {  //后台设置界面
             updateStatus.innerHTML = "<p><b>检查更新中...</b></p>";
             checkUpdateBtn.disabled = true;
             
-            fetch('<?php echo Helper::options()->themeUrl.'/update.php'; ?>')
+            fetch('<?php echo Helper::options()->themeUrl.'/ext/update.php'; ?>')
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -326,7 +326,7 @@ function parseCustomGitHubTag($content) {
                     ? htmlspecialchars(date('y-m-d', strtotime($data['pushed_at'])))
                     : '未知时间'
             ];
-            $themeUrl = Helper::options()->themeUrl.'/config/style/img/icon/github-mark.svg';
+            $themeUrl = Helper::options()->themeUrl.'/pictures/icon/github-mark.svg';
             return <<<HTML
             <div class="mdui-typo blur LDtrans yuan akarom-panel-menu">
                 <div class="akarom-corner-symbol-rb">

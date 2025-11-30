@@ -71,7 +71,7 @@ function threadedComments($comments, $options) {
                     $width = $matches[1] ? '50' : '30';
                     $emoticon = $matches[2];
                     $themeUrl = htmlspecialchars($GLOBALS['theme_url'], ENT_QUOTES, 'UTF-8');
-                    return '<img style="width:' . $width . 'px; height:auto; margin-bottom:-7px;" src="' . $themeUrl . '/config/style/img/bili/' . $emoticon . '.webp" loading="lazy" alt="' . $emoticon . '">';
+                    return '<img style="width:' . $width . 'px; height:auto; margin-bottom:-7px;" src="' . $themeUrl . '/pictures/bili/' . $emoticon . '.webp" loading="lazy" alt="' . $emoticon . '">';
                 },
                 $comments->content
             );
@@ -111,7 +111,7 @@ function threadedComments($comments, $options) {
                     </span>
                 </span>
                 <br><br>
-                <?php $this->need('config/OwO.php'); ?>
+                <?php $this->need('ext/OwO.php'); ?>
                 <div class="mdui-textfield mdui-textfield-floating-label">
                     <i class="mdui-icon material-icons">textsms</i>
                     <textarea class="mdui-textfield-input" name="text" id="textarea" placeholder="开始发表评论吧" required><?php $this->remember('text'); ?></textarea>
@@ -125,7 +125,7 @@ function threadedComments($comments, $options) {
                     </span>
                 </span>
                 <br><br>
-                <?php $this->need('config/OwO.php'); ?>
+                <?php $this->need('ext/OwO.php'); ?>
                 <div class="mdui-textfield mdui-textfield-floating-label">
                     <i class="mdui-icon material-icons">textsms</i>
                     <textarea class="mdui-textfield-input" name="text" id="textarea" placeholder="说点什么吧~" required><?php $this->remember('text'); ?></textarea>

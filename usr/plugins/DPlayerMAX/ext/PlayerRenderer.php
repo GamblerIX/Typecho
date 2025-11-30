@@ -8,7 +8,7 @@ class DPlayerMAX_PlayerRenderer
     public static function renderHeader()
     {
         $url = \Utils\Helper::options()->pluginUrl . '/DPlayerMAX';
-        echo '<link rel="stylesheet" href="' . $url . '/assets/DPlayer.min.css" />' . "\n";
+        echo '<link rel="stylesheet" href="' . $url . '/assets/DPlayer.css" />' . "\n";
         echo '<style>
 .dplayer-lazy{background:#000;position:relative;aspect-ratio:16/9}
 .dplayer-lazy::before{content:"";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:dplayer-spin 1s linear infinite}
@@ -40,10 +40,10 @@ class DPlayerMAX_PlayerRenderer
         $url = \Utils\Helper::options()->pluginUrl . '/DPlayerMAX';
         $cfg = \Utils\Helper::options()->plugin('DPlayerMAX');
 
-        if (!empty($cfg->hls)) echo '<script src="' . $url . '/plugin/hls.min.js"></script>' . "\n";
-        if (!empty($cfg->flv)) echo '<script src="' . $url . '/plugin/flv.min.js"></script>' . "\n";
+        if (!empty($cfg->hls)) echo '<script src="' . $url . '/assets/hls.js"></script>' . "\n";
+        if (!empty($cfg->flv)) echo '<script src="' . $url . '/assets/flv.js"></script>' . "\n";
 
-        echo '<script src="' . $url . '/assets/DPlayer.min.js"></script>' . "\n";
+        echo '<script src="' . $url . '/assets/DPlayer.js"></script>' . "\n";
         echo '<script>window.DPLAYERMAX_API="' . rtrim(\Utils\Helper::options()->index, '/') . '/?dplayermax_api=";</script>' . "\n";
         echo self::renderInitScript();
     }

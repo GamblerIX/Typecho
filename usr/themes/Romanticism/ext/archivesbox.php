@@ -16,12 +16,12 @@
  */
 ?>
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('config/header.php'); ?>
+<?php $this->need('base/header.php'); ?>
 
 <div class="mdui-shadow-0 articlecard mdui-card show">
   <div class="mdui-valign articlecard mdui-text-center">
     <div class="mdui-card-primary easysee mdui-center">
-      <div class="mdui-card-primary-title"><h2>文章归档</div>
+      <div class="mdui-card-primary-title"><h2>文章归档</h2></div>
         <div class="mdui-card-primary-subtitle">
             <h4>这里保存着往昔</h4>
         </div>
@@ -34,7 +34,7 @@
     <?php if ($this->fields->AKAROMarticleimg != null): ?>
         background-image: url('<?php $this->fields->AKAROMarticleimg(); ?>');
     <?php else: ?>
-        background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("config/style/img/default/cover/{$randomNum}.webp"); ?>');
+        background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>');
     <?php endif; ?>
 
     ">
@@ -52,13 +52,11 @@
 <?php $this->widget('Widget_Contents_Post_Recent', 'pageSize=10000')->to($archives);
     $year=0; $mon=0; $i=0; $j=0;
     $count = '0';
+    $output = '';
     while($archives->next()):
         $count = $count + 1;
         $year_tmp = date('Y',$archives->created);
         $mon_tmp = date('m',$archives->created);
-        $y=$year; $m=$mon;
-        if ($mon != $mon_tmp && $mon > 0) $output .= '';
-        if ($year != $year_tmp && $year > 0) $output .= '';
         if ($year != $year_tmp) {
             $year = $year_tmp;
             $output .= '<h1>'. $year .' 年</h1>'; 
@@ -75,4 +73,4 @@
 </div>
 </div><!--内容结束-->
 </div><!--主布局容器结束-->
-<?php $this->need('config/footer.php'); ?>
+<?php $this->need('base/footer.php'); ?>

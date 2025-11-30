@@ -16,7 +16,7 @@
  */
 ?>
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('config/header.php'); ?>
+<?php $this->need('base/header.php'); ?>
 
 <div class="mdui-shadow-0 articlecard mdui-card show">
   <div class="mdui-valign articlecard mdui-text-center">
@@ -33,7 +33,7 @@
   <?php if ($this->fields->AKAROMarticleimg != null): ?>
       background-image: url('<?php $this->fields->AKAROMarticleimg(); ?>');
   <?php else: ?>
-      background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("config/style/img/default/cover/{$randomNum}.webp"); ?>');
+      background-image: url('<?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>');
   <?php endif; ?>
 
   ">
@@ -58,7 +58,7 @@ if($this->content == null){
   ?>
   <div class="blur btnyuan mdui-card mdui-shadow-0 akarom-links mdui-m-y-1">
       <div class="mdui-card-header">
-        <img class="mdui-card-header-avatar" onclick="window.location.href='<?php $this->options ->siteUrl('/admin'); ?>'" title="headicon" src="<?php if(empty($this->options->AKAROMlogoUrl)): ?><?php $this->options->themeUrl('config/style/img/default/user.jpg'); ?><?php else: ?><?php $this->options->AKAROMlogoUrl(); ?><?php endif; ?>">
+        <img class="mdui-card-header-avatar" onclick="window.location.href='<?php $this->options ->siteUrl('/admin'); ?>'" title="headicon" src="<?php if(empty($this->options->AKAROMlogoUrl)): ?><?php $this->options->themeUrl('pictures/default/user.jpg'); ?><?php else: ?><?php $this->options->AKAROMlogoUrl(); ?><?php endif; ?>">
         <div class="mdui-card-header-title">
           <b><a target="_blank" href="<?php $this->options ->siteUrl(); ?>">
             <?php $this->options->title(); ?>
@@ -152,9 +152,9 @@ echo $friendlink;
 
 
 
-<?php $this->need('config/comments.php'); ?>
+<?php $this->need('base/comments.php'); ?>
 <br>
 </div>
 </div><!--内容结束-->
 </div><!--主布局容器结束-->
-<?php $this->need('config/footer.php'); ?>
+<?php $this->need('base/footer.php'); ?>
