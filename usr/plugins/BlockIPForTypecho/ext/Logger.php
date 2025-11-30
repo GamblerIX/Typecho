@@ -103,34 +103,18 @@ class Logger
             $prefix = $db->getPrefix();
             $request = new Request();
             $currentTime = time();
-            
-            $existingRecord = $db->fetchRow($db->select()
-                ->from($prefix . 'blockip_access_log')
-                ->where('ip = ?', $ip));
-            
-            if ($existingRecord) {
-                $db->query($db->update($prefix . 'blockip_access_log')
-                    ->rows([
-                        'url' => substr($url, 0, 500),
-                        'user_agent' => substr((string)$request->getAgent(), 0, 500),
-                        'last_access' => $currentTime,
-                        'timestamp' => $currentTime
-                    ])
-                    ->where('ip = ?', $ip));
-            } else {
-                $db->query($db->insert($prefix . 'blockip_access_log')
-                    ->rows([
-                        'ip' => $ip,
-                        'url' => substr($url, 0, 500),
-                        'user_agent' => substr((string)$request->getAgent(), 0, 500),
-                        'last_access' => $currentTime,
-                        'timestamp' => $currentTime
-                    ]));
-            }
-            
-            // 清理30天前的旧记录
+
+            $db->query($db->insert($prefix . 'blockip_access_log')
+                ->rows([
+                    'ip' => $ip,
+                    'url' => substr($url, 0, 500),
+                    'user_agent' => substr((string)$request->getAgent(), 0, 500),
+                    'last_access' => $currentTime,
+                    'timestamp' => $currentTime
+                ]));
+
             $db->query($db->delete($prefix . 'blockip_access_log')
-                ->where('last_access < ?', $currentTime - 2592000));
+                ->where('timestamp < ?', $currentTime - 120));
         } catch (\Exception $e) {
             error_log(self::PLUGIN_NAME . " recordLastAccess Error: " . $e->getMessage());
         }

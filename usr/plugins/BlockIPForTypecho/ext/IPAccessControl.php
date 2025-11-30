@@ -442,23 +442,22 @@ class IPAccessControl
     public static function getLastAccessTime(string $ip): int
     {
         static $accessCache = [];
-        
+
         if (isset($accessCache[$ip])) {
             return $accessCache[$ip];
         }
-        
+
         try {
             $db = Db::get();
             $prefix = $db->getPrefix();
-            
-            $result = $db->fetchObject($db->select('last_access')
+
+            $result = $db->fetchObject($db->select('MAX(last_access) as last_access')
                 ->from($prefix . 'blockip_access_log')
-                ->where('ip = ?', $ip)
-                ->limit(1));
-            
-            $lastAccess = $result ? (int)$result->last_access : 0;
+                ->where('ip = ?', $ip));
+
+            $lastAccess = $result && $result->last_access ? (int)$result->last_access : 0;
             $accessCache[$ip] = $lastAccess;
-            
+
             return $lastAccess;
         } catch (\Exception $e) {
             return 0;

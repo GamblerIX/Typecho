@@ -1,14 +1,18 @@
 <?php
 /**
  * BlockIP For Typecho - 控制台页面
- * 
+ *
  * 显示详细的日志记录和统计信息
- * 
+ *
  * @author GamblerIX
  * @link https://github.com/GamblerIX/BlockIPForTypecho
  */
 
-require_once __DIR__ . '/../../Plugin.php';
+$adminPath = __DIR__ . '/../../../../admin/';
+
+require_once $adminPath . 'common.php';
+
+require_once __DIR__ . '/../Plugin.php';
 require_once __DIR__ . '/PathHelper.php';
 require_once __DIR__ . '/VisitorStats.php';
 require_once __DIR__ . '/Database.php';
@@ -26,16 +30,15 @@ if ($isAjaxRequest) {
     while (ob_get_level() > 0) {
         ob_end_clean();
     }
-    
+
     @ini_set('display_errors', '0');
     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
     header('Content-Type: application/json; charset=UTF-8');
     header('Cache-Control: no-cache, must-revalidate');
-    
+
     try {
-        // 获取并验证IP参数
         $ip = isset($_GET['ip']) ? trim($_GET['ip']) : '';
-        
+
         if (empty($ip)) {
             echo json_encode([
                 'success' => false,
@@ -52,15 +55,13 @@ if ($isAjaxRequest) {
             ], JSON_UNESCAPED_UNICODE);
             exit;
         }
-        
+
         $result = VisitorStats::getIPAccessHistory($ip, 50);
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
-        
+
     } catch (Exception $e) {
-        // 记录详细错误信息
         error_log('BlockIPForTypecho Error: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
-        
-        // 返回友好的错误消息
+
         echo json_encode([
             'success' => false,
             'error' => '服务器内部错误，请稍后重试',
@@ -70,22 +71,10 @@ if ($isAjaxRequest) {
     }
     exit;
 }
+
 $request = Typecho_Request::getInstance();
 $action = $request->get('action', '');
 
-// 安全检查（仅用于页面渲染）
-if (!defined('__TYPECHO_ADMIN__') && !defined('__TYPECHO_ROOT_DIR__')) {
-    exit;
-}
-
-// 包含 Typecho 后台标准文件以保留导航菜单
-// 使用相对路径从插件目录导航到 Typecho 根目录，避免 open_basedir 限制
-// 插件路径：usr/plugins/BlockIPForTypecho/ext/Console.php
-// 目标路径：admin/common.php
-// 相对路径：../../../../admin/ (向上4级到根目录)
-$adminPath = __DIR__ . '/../../../../admin/';
-
-require_once $adminPath . 'common.php';
 require_once $adminPath . 'header.php';
 require_once $adminPath . 'menu.php';
 $allowedTabs = ['security', 'visitors', 'bots', 'audit', 'selfcheck'];
@@ -486,11 +475,11 @@ if ($tab === 'security') {
     </div>
     
     <?php if ($success_message): ?>
-        <div class="message success"><?php echo htmlspecialchars($success_message); ?></div>
+        <div class="message success"><?php echo $success_message; ?></div>
     <?php endif; ?>
-    
+
     <?php if ($error_message): ?>
-        <div class="message error"><?php echo htmlspecialchars($error_message); ?></div>
+        <div class="message error"><?php echo $error_message; ?></div>
     <?php endif; ?>
     
     <?php if ($tab === 'security'): ?>
@@ -1150,5 +1139,5 @@ if ($tab === 'security') {
 </div>
 
 <?php
-require_once __DIR__ . '/../../../../../admin/footer.php';
+require_once $adminPath . 'footer.php';
 ?>

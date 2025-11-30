@@ -38,13 +38,15 @@ class Database
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         
         $accessTable = "CREATE TABLE IF NOT EXISTS `{$prefix}blockip_access_log` (
+            `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `ip` varchar(45) NOT NULL,
             `url` varchar(500) DEFAULT NULL,
             `user_agent` varchar(500) DEFAULT NULL,
             `last_access` int(10) unsigned NOT NULL,
             `timestamp` int(10) unsigned NOT NULL,
-            PRIMARY KEY (`ip`),
-            KEY `idx_last_access` (`last_access`)
+            PRIMARY KEY (`id`),
+            KEY `idx_ip` (`ip`),
+            KEY `idx_timestamp` (`timestamp`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         
         $visitorLogTable = "CREATE TABLE IF NOT EXISTS `{$prefix}visitor_log` (
@@ -88,7 +90,7 @@ class Database
             $db = Db::get();
             $prefix = $db->getPrefix();
             $messages = [];
-            
+
             try {
                 $db->fetchRow($db->select()->from($prefix . 'blockip_logs')->limit(1));
                 $messages[] = '拦截日志表结构正常';
@@ -101,10 +103,18 @@ class Database
                     $messages[] = '拦截日志表修复失败';
                 }
             }
-            
+
             try {
-                $db->fetchRow($db->select()->from($prefix . 'blockip_access_log')->limit(1));
-                $messages[] = '访问日志表结构正常';
+                $columns = $db->fetchAll("SHOW COLUMNS FROM `{$prefix}blockip_access_log`");
+                $columnNames = array_column($columns, 'Field');
+
+                if (!in_array('id', $columnNames)) {
+                    $db->query("DROP TABLE IF EXISTS `{$prefix}blockip_access_log`");
+                    self::createTables();
+                    $messages[] = '访问日志表已升级（添加多记录支持）';
+                } else {
+                    $messages[] = '访问日志表结构正常';
+                }
             } catch (\Exception $e) {
                 try {
                     $db->query("DROP TABLE IF EXISTS `{$prefix}blockip_access_log`");
@@ -114,10 +124,10 @@ class Database
                     $messages[] = '访问日志表修复失败';
                 }
             }
-            
+
             $indexResult = self::ensureIndexes();
             $messages[] = $indexResult;
-            
+
             return implode('<br/>', $messages);
         } catch (\Exception $e) {
             return '数据库修复失败: ' . $e->getMessage();

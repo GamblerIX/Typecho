@@ -12,7 +12,7 @@ class PathHelper
     public static function getPluginRoot(): string
     {
         if (self::$pluginRoot === null) {
-            self::$pluginRoot = dirname(dirname(__DIR__));
+            self::$pluginRoot = dirname(__DIR__);
         }
         return self::$pluginRoot;
     }
