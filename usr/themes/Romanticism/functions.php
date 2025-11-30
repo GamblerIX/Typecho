@@ -17,7 +17,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
 function themeConfig($form) {  //后台设置界面
 ?>
-    
+
     <style type="text/css">
         hr{
             width:100%;
@@ -31,44 +31,7 @@ function themeConfig($form) {  //后台设置界面
         }
     </style>
     <h1><img src="<?php echo Helper::options()->themeUrl.'/pictures/icon.png'; ?>">主题设置</h1>
-    <p><button id="checkUpdateBtn" class="btn">检查更新</button> · 当前版本: 2.2 · <a href="https://github.com/akashiwest/Romanticism" target="_blank">Github 文档</a></p>
-    <div id="updateStatus"></div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkUpdateBtn = document.getElementById('checkUpdateBtn');
-        const updateStatus = document.getElementById('updateStatus');
-        
-        checkUpdateBtn.addEventListener('click', function() {
-            updateStatus.innerHTML = "<p><b>检查更新中...</b></p>";
-            checkUpdateBtn.disabled = true;
-            
-            fetch('<?php echo Helper::options()->themeUrl.'/ext/update.php'; ?>')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        updateStatus.innerHTML = `<p style="color:Crimson;"><b>${data.error}</b></p>`;
-                        checkUpdateBtn.disabled = false;
-                    } else {
-                        if (data.has_update) {
-                            checkUpdateBtn.disabled = false;
-                            updateStatus.innerHTML = `
-                                <p><b>最新版本:</b> ${data.latest_version}</p>
-                                <p><b>更新内容:</b> ${data.feature}</p>
-                                <p><a href="${data.update_url}" target="_blank"><b>点击下载更新</b></a></p>
-                            `;
-                        } else {
-                            updateStatus.innerHTML = `<p style="color:ForestGreen;"><b>当前已是最新版本</b></p>`;
-                            checkUpdateBtn.disabled = false;
-                        }
-                    }
-                })
-                .catch(error => {
-                    updateStatus.innerHTML = `<p style="color:Crimson;"><b>检查更新失败: ${error.message}</b></p>`;
-                    checkUpdateBtn.disabled = false;
-                });
-        });
-    });
-    </script>
+
     <style>
         button.primary{
             position: fixed;

@@ -117,14 +117,21 @@ $stickynumbers = array_filter(array_unique(explode(',', $stickynumbers)));
 
 foreach ($stickynumbers as $stickynum): ?>
   <?php 
-    $post = Typecho_Widget::widget('Widget_Archive@cid_' . $stickynum, 'type=post', 'cid=' . $stickynum); 
+    $db = Typecho_Db::get();
+    $post = $db->fetchRow($db->select()->from('table.contents')->where('cid = ?', intval($stickynum))->where('status = ?', 'publish')->limit(1));
+    if (!$post) continue;
   ?>
     
+      <?php 
+        $postFields = $db->fetchRow($db->select('str_value')->from('table.fields')->where('cid = ?', intval($stickynum))->where('name = ?', 'AKAROMarticleimg'));
+        $postImg = $postFields ? $postFields['str_value'] : null;
+        $postUrl = Typecho_Router::url('post', array('cid' => $post['cid'], 'slug' => $post['slug'], 'category' => '', 'year' => date('Y', $post['created']), 'month' => date('m', $post['created']), 'day' => date('d', $post['created'])), $this->options->index);
+      ?>
       <div class="mdui-card btnyuan sticky-item mdui-shadow-0">
         <div class="mdui-card-media">
           <img src="
-            <?php if ($post->fields->AKAROMarticleimg != null): ?>
-            <?php $post->fields->AKAROMarticleimg(); ?>
+            <?php if ($postImg): ?>
+            <?php echo $postImg; ?>
             <?php else: ?>
             <?php $randomNum = mt_rand(1, 12);$this->options->themeUrl("pictures/default/cover/{$randomNum}.webp"); ?>
             <?php endif; ?>
@@ -133,7 +140,7 @@ foreach ($stickynumbers as $stickynum): ?>
           <div class="mdui-card-media-covered">
             <div class="mdui-card-primary">
               <div class="mdui-card-primary-title mdui-text-truncate easysee">
-                <h5><a class="title chameleon underline" onclick="window.location.href='<?php echo $post->permalink; ?>'">&nbsp;<?php echo $post->title; ?>&nbsp;</a></h5></div>
+                <h5><a class="title chameleon underline" onclick="window.location.href='<?php echo $postUrl; ?>'">&nbsp;<?php echo htmlspecialchars($post['title']); ?>&nbsp;</a></h5></div>
             </div>
           </div>
         </div>
