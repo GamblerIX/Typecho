@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例如: v1.0.0)'
+        required: true
+        type: string
+      changelog:
+        description: '更新内容摘要'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set version (tag trigger)
+        if: github.event_name == 'push'
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Set version (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Get changelog (tag trigger)
+        if: github.event_name == 'push'
+        run: |
+          CHANGELOG=$(git log -1 --pretty=%B)
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Get changelog (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "${{ inputs.changelog }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create tag (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a ${{ env.VERSION }} -m "${{ inputs.changelog }}"
+          git push origin ${{ env.VERSION }}
+
+      - name: Package project
+        run: |
+          zip -r Typecho-${{ env.VERSION }}.zip . \
+            -x ".git/*" ".github/*" "docs/*" "*.md"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Typecho ${{ env.VERSION }}
+          body: |
+            ## 更新内容
+
+            ${{ env.CHANGELOG }}
+
+            ---
+
+            ## 安装说明
+
+            1. 下载 `Typecho-${{ env.VERSION }}.zip`
+            2. 解压到网站根目录
+            3. 访问网站进行安装
+          files: Typecho-${{ env.VERSION }}.zip
+          draft: false
+          prerelease: false
