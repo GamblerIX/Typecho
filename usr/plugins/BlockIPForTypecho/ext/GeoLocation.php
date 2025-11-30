@@ -99,28 +99,35 @@ class GeoLocation
         if (!isset($config->blockedRegions) || empty($config->blockedRegions)) {
             return false;
         }
-        
+
         $location = self::lookupIPLocation($ip);
-        
+
         if (!$location) {
             return false;
         }
-        
-        $blockedRegions = explode("\n", $config->blockedRegions);
-        
-        foreach ($blockedRegions as $region) {
+
+        $regionMode = isset($config->regionMode) ? $config->regionMode : 'blacklist';
+        $regions = explode("\n", $config->blockedRegions);
+        $matched = false;
+
+        foreach ($regions as $region) {
             $region = trim($region);
-            
+
             if (empty($region) || strpos($region, '#') === 0) {
                 continue;
             }
-            
+
             if (stripos($location, $region) !== false) {
-                return true;
+                $matched = true;
+                break;
             }
         }
-        
-        return false;
+
+        if ($regionMode === 'whitelist') {
+            return !$matched;
+        }
+
+        return $matched;
     }
     
     /**

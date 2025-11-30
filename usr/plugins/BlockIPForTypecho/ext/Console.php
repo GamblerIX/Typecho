@@ -75,7 +75,7 @@ $action = $request->get('action', '');
 
 require_once $adminPath . 'header.php';
 require_once $adminPath . 'menu.php';
-$allowedTabs = ['security', 'visitors', 'bots', 'audit'];
+$allowedTabs = ['security', 'visitors', 'bots', 'audit', 'settings'];
 $tab = $request->get('tab', 'security');
 if (!in_array($tab, $allowedTabs)) {
     $tab = 'security';
@@ -212,6 +212,43 @@ if ($action === 'fix_database' && $request->isPost()) {
         $success_message = $result;
     } catch (Exception $e) {
         $error_message = "修复数据库失败: " . $e->getMessage();
+    }
+}
+if ($action === 'save_settings' && $request->isPost()) {
+    try {
+        $settings = [
+            'mode' => $request->get('mode', 'smart'),
+            'blacklistMode' => $request->get('blacklistMode', 'block'),
+            'blacklist' => $request->get('blacklist', ''),
+            'whitelist' => $request->get('whitelist', ''),
+            'uaWhitelist' => $request->get('uaWhitelist', ''),
+            'urlWhitelist' => $request->get('urlWhitelist', ''),
+            'accessInterval' => $request->get('accessInterval', '10'),
+            'regionMode' => $request->get('regionMode', 'blacklist'),
+            'blockedRegions' => $request->get('blockedRegions', ''),
+            'sensitiveWords' => $request->get('sensitiveWords', ''),
+            'enableSQLProtection' => $request->get('enableSQLProtection') ? ['1'] : [],
+            'enableXSSProtection' => $request->get('enableXSSProtection') ? ['1'] : [],
+            'enableCSRFProtection' => $request->get('enableCSRFProtection') ? ['1'] : [],
+            'customMessage' => $request->get('customMessage', '抱歉，您的访问被系统安全策略拦截。'),
+            'debugMode' => $request->get('debugMode', '0'),
+            'enableLoginCaptcha' => $request->get('enableLoginCaptcha') ? ['1'] : [],
+            'enableVisitorLog' => $request->get('enableVisitorLog') ? ['1'] : [],
+            'botKeywords' => $request->get('botKeywords', ''),
+            'logRetentionDays' => $request->get('logRetentionDays', '30'),
+            'adminWhitelist' => $request->get('adminWhitelist', ''),
+            'adminRedirectUrl' => $request->get('adminRedirectUrl', ''),
+            'completeUninstall' => $request->get('completeUninstall') ? ['1'] : []
+        ];
+
+        $db->query($db->update('table.options')
+            ->rows(['value' => serialize($settings)])
+            ->where('name = ?', 'plugin:BlockIPForTypecho'));
+
+        $success_message = "设置已保存";
+        $pluginOptions = (object)$settings;
+    } catch (Exception $e) {
+        $error_message = "保存设置失败: " . $e->getMessage();
     }
 }
 
@@ -435,6 +472,7 @@ if ($tab === 'security') {
         <a href="<?php echo PathHelper::getConsolePanelUrl('visitors'); ?>" class="<?php echo $tab === 'visitors' ? 'active' : ''; ?>">访客日志</a>
         <a href="<?php echo PathHelper::getConsolePanelUrl('bots'); ?>" class="<?php echo $tab === 'bots' ? 'active' : ''; ?>">机器人管理</a>
         <a href="<?php echo PathHelper::getConsolePanelUrl('audit'); ?>" class="<?php echo $tab === 'audit' ? 'active' : ''; ?>">网站审计</a>
+        <a href="<?php echo PathHelper::getConsolePanelUrl('settings'); ?>" class="<?php echo $tab === 'settings' ? 'active' : ''; ?>">插件设置</a>
     </div>
     
     <?php if ($success_message): ?>
@@ -565,7 +603,7 @@ if ($tab === 'security') {
             <p style="color: #999; text-align: center; padding: 20px;">黑名单为空</p>
             <?php endif; ?>
             <p style="margin-top: 15px; color: #666;">
-                <strong>提示：</strong>要管理黑名单，请前往 <a href="options-plugin.php?config=BlockIPForTypecho">插件配置页面</a>
+                <strong>提示：</strong>要管理黑名单，请前往 <a href="<?php echo PathHelper::getConsolePanelUrl('settings'); ?>">插件设置</a>
             </p>
         </div>
         
@@ -864,6 +902,232 @@ if ($tab === 'security') {
             }
         });
         </script>
+
+    <?php elseif ($tab === 'settings'): ?>
+        <?php
+        $cfg = [];
+        if ($pluginOptions) {
+            foreach (['mode', 'blacklistMode', 'blacklist', 'whitelist', 'uaWhitelist', 'urlWhitelist',
+                      'accessInterval', 'blockedRegions', 'sensitiveWords', 'customMessage', 'debugMode',
+                      'botKeywords', 'logRetentionDays', 'adminWhitelist', 'adminRedirectUrl'] as $key) {
+                $cfg[$key] = isset($pluginOptions->$key) ? $pluginOptions->$key : '';
+            }
+            foreach (['enableSQLProtection', 'enableXSSProtection', 'enableCSRFProtection',
+                      'enableLoginCaptcha', 'enableVisitorLog', 'completeUninstall'] as $key) {
+                $cfg[$key] = isset($pluginOptions->$key) && in_array('1', (array)$pluginOptions->$key);
+            }
+        }
+        ?>
+        <form method="post" class="settings-form">
+            <input type="hidden" name="action" value="save_settings">
+
+            <div class="settings-section">
+                <h2>基本设置</h2>
+
+                <div class="setting-item">
+                    <label>工作模式</label>
+                    <select name="mode" class="wide">
+                        <option value="blacklist" <?php echo ($cfg['mode'] ?? '') === 'blacklist' ? 'selected' : ''; ?>>黑名单模式（拦截指定IP）</option>
+                        <option value="whitelist" <?php echo ($cfg['mode'] ?? '') === 'whitelist' ? 'selected' : ''; ?>>白名单模式（仅允许指定IP）</option>
+                        <option value="smart" <?php echo ($cfg['mode'] ?? 'smart') === 'smart' ? 'selected' : ''; ?>>智能模式（自动识别威胁）</option>
+                    </select>
+                    <p class="desc">选择插件的工作模式</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>黑名单处理模式</label>
+                    <select name="blacklistMode" class="wide">
+                        <option value="block" <?php echo ($cfg['blacklistMode'] ?? 'block') === 'block' ? 'selected' : ''; ?>>完全禁止访问</option>
+                        <option value="limit" <?php echo ($cfg['blacklistMode'] ?? '') === 'limit' ? 'selected' : ''; ?>>限制访问频率</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>访问间隔（秒）</label>
+                    <input type="number" name="accessInterval" value="<?php echo htmlspecialchars($cfg['accessInterval'] ?? '10'); ?>" min="1">
+                    <p class="desc">同一IP两次访问的最小间隔时间</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>调试模式</label>
+                    <select name="debugMode" class="wide">
+                        <option value="0" <?php echo ($cfg['debugMode'] ?? '0') === '0' ? 'selected' : ''; ?>>关闭</option>
+                        <option value="1" <?php echo ($cfg['debugMode'] ?? '') === '1' ? 'selected' : ''; ?>>开启</option>
+                    </select>
+                    <p class="desc">开启后会在错误日志中记录详细信息</p>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>IP 访问控制</h2>
+
+                <div class="setting-item">
+                    <label>IP 黑名单</label>
+                    <textarea name="blacklist" rows="6"><?php echo htmlspecialchars($cfg['blacklist'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个IP或IP段，支持：单个IP、IP范围(1-50)、通配符(*)、CIDR(/24)</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>IP 白名单</label>
+                    <textarea name="whitelist" rows="6"><?php echo htmlspecialchars($cfg['whitelist'] ?? ''); ?></textarea>
+                    <p class="desc">白名单IP不受任何限制</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>User-Agent 白名单</label>
+                    <textarea name="uaWhitelist" rows="4"><?php echo htmlspecialchars($cfg['uaWhitelist'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个关键词，包含这些关键词的UA不受限制</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>URL 白名单</label>
+                    <textarea name="urlWhitelist" rows="4"><?php echo htmlspecialchars($cfg['urlWhitelist'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个URL路径，这些路径不受限制</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>地区过滤模式</label>
+                    <select name="regionMode" class="wide">
+                        <option value="blacklist" <?php echo ($cfg['regionMode'] ?? 'blacklist') === 'blacklist' ? 'selected' : ''; ?>>黑名单模式（拦截指定地区）</option>
+                        <option value="whitelist" <?php echo ($cfg['regionMode'] ?? '') === 'whitelist' ? 'selected' : ''; ?>>白名单模式（仅允许指定地区）</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>地区列表</label>
+                    <textarea name="blockedRegions" rows="4"><?php echo htmlspecialchars($cfg['blockedRegions'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个地区名称（如：美国、日本），根据上方模式决定拦截或允许</p>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>安全防护</h2>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="enableSQLProtection" value="1" checked disabled>
+                        <input type="hidden" name="enableSQLProtection" value="1">
+                        启用 SQL 注入防护
+                    </label>
+                </div>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="enableXSSProtection" value="1" checked disabled>
+                        <input type="hidden" name="enableXSSProtection" value="1">
+                        启用 XSS 攻击防护
+                    </label>
+                </div>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="enableCSRFProtection" value="1" checked disabled>
+                        <input type="hidden" name="enableCSRFProtection" value="1">
+                        启用 CSRF 攻击防护
+                    </label>
+                </div>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="enableLoginCaptcha" value="1" <?php echo ($cfg['enableLoginCaptcha'] ?? false) ? 'checked' : ''; ?>>
+                        启用登录验证码保护
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <label>敏感词列表</label>
+                    <textarea name="sensitiveWords" rows="4"><?php echo htmlspecialchars($cfg['sensitiveWords'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个敏感词，包含这些词的请求将被拦截</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>自定义拦截提示</label>
+                    <textarea name="customMessage" rows="3"><?php echo htmlspecialchars($cfg['customMessage'] ?? '抱歉，您的访问被系统安全策略拦截。'); ?></textarea>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>后台访问控制</h2>
+
+                <div class="setting-item">
+                    <label>后台访问IP白名单</label>
+                    <textarea name="adminWhitelist" rows="4"><?php echo htmlspecialchars($cfg['adminWhitelist'] ?? ''); ?></textarea>
+                    <p class="desc">每行一个IP或IP段，留空表示允许所有IP访问后台</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>非白名单IP重定向URL</label>
+                    <input type="text" name="adminRedirectUrl" value="<?php echo htmlspecialchars($cfg['adminRedirectUrl'] ?? ''); ?>">
+                    <p class="desc">当IP不在白名单时跳转的URL，留空则跳转到网站首页</p>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>访客日志</h2>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="enableVisitorLog" value="1" checked disabled>
+                        <input type="hidden" name="enableVisitorLog" value="1">
+                        启用访客日志记录
+                    </label>
+                    <p class="desc">记录所有访客访问信息（不包括管理后台和机器人）</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>机器人关键词</label>
+                    <textarea name="botKeywords" rows="6"><?php echo htmlspecialchars($cfg['botKeywords'] ?? "baidu=>百度\ngoogle=>谷歌\nsogou=>搜狗\nyoudao=>有道\nsoso=>搜搜\nbing=>必应\nyahoo=>雅虎\n360=>360搜索"); ?></textarea>
+                    <p class="desc">每行一个，格式：关键词=>显示名称。用于识别搜索引擎爬虫</p>
+                </div>
+
+                <div class="setting-item">
+                    <label>日志保留天数</label>
+                    <input type="number" name="logRetentionDays" value="<?php echo htmlspecialchars($cfg['logRetentionDays'] ?? '30'); ?>" min="0">
+                    <p class="desc">访客日志保留天数，0表示不自动清理</p>
+                </div>
+            </div>
+
+            <div class="settings-section danger-zone">
+                <h2>危险操作</h2>
+
+                <div class="setting-item checkbox-item">
+                    <label>
+                        <input type="checkbox" name="completeUninstall" value="1" <?php echo ($cfg['completeUninstall'] ?? false) ? 'checked' : ''; ?>>
+                        启用完整卸载（禁用插件时删除所有数据库表）
+                    </label>
+                    <p class="desc warning">警告：启用此选项后，禁用插件时将删除所有数据库表，包括所有日志记录。此操作不可恢复！</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存设置</button>
+            </div>
+        </form>
+
+        <style>
+        .settings-form { max-width: 800px; }
+        .settings-section { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .settings-section h2 { margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 18px; color: #333; }
+        .setting-item { margin-bottom: 20px; }
+        .setting-item:last-child { margin-bottom: 0; }
+        .setting-item > label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
+        .setting-item select, .setting-item input[type="text"], .setting-item input[type="number"] {
+            padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; width: 100%; max-width: 400px; font-size: 14px;
+        }
+        .setting-item select.wide { max-width: 800px; height: 50px; }
+        .setting-item textarea {
+            padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; width: 100%; font-size: 14px; font-family: monospace;
+        }
+        .setting-item .desc { margin: 8px 0 0 0; font-size: 13px; color: #666; }
+        .setting-item .desc.warning { color: #dc3545; font-weight: 500; }
+        .checkbox-item > label { display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; }
+        .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .danger-zone { border: 2px solid #dc3545; }
+        .danger-zone h2 { color: #dc3545; }
+        .form-actions { margin-top: 20px; }
+        .btn-primary { background: #467b96; padding: 12px 30px; font-size: 16px; }
+        .btn-primary:hover { background: #356a7f; }
+        </style>
 
     <?php endif; ?>
     

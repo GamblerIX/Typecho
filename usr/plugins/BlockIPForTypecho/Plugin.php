@@ -14,10 +14,7 @@ namespace TypechoPlugin\BlockIPForTypecho;
 
 use Typecho\Plugin\PluginInterface;
 use Typecho\Widget\Helper\Form;
-use Typecho\Widget\Helper\Form\Element\Select;
-use Typecho\Widget\Helper\Form\Element\Textarea;
 use Typecho\Widget\Helper\Form\Element\Text;
-use Typecho\Widget\Helper\Form\Element\Checkbox;
 use Typecho\Plugin as TypechoPlugin;
 use Typecho\Db;
 use Typecho\Request;
@@ -109,187 +106,13 @@ class Plugin implements PluginInterface
     
     public static function config(Form $form)
     {
-        $mode = new Select(
-            'mode',
-            [
-                'blacklist' => '黑名单模式（拦截指定IP）',
-                'whitelist' => '白名单模式（仅允许指定IP）',
-                'smart' => '智能模式（自动识别威胁）'
-            ],
-            'smart',
-            '工作模式',
-            '选择插件的工作模式'
-        );
+        echo '<div style="background: #d4edda; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #c3e6cb;">';
+        echo '<p style="margin: 0; color: #155724;">插件设置已移至 <a href="' . \Helper::options()->adminUrl . 'extending.php?panel=' . PathHelper::getConsolePanelPath() . '&tab=settings" style="color: #155724; font-weight: bold;">IP防护控制台 → 插件设置</a></p>';
+        echo '</div>';
+
+        $mode = new Text('mode', null, 'smart', ' ');
+        $mode->input->setAttribute('style', 'display:none');
         $form->addInput($mode);
-        
-        $blacklistMode = new Select(
-            'blacklistMode',
-            [
-                'block' => '完全禁止访问',
-                'limit' => '限制访问频率'
-            ],
-            'block',
-            '黑名单处理模式'
-        );
-        $form->addInput($blacklistMode);
-        
-        $blacklist = new Textarea(
-            'blacklist',
-            null,
-            '',
-            'IP黑名单',
-            '每行一个IP或IP段，支持：单个IP、IP范围(1-50)、通配符(*)、CIDR(/24)'
-        );
-        $form->addInput($blacklist);
-        
-        $whitelist = new Textarea(
-            'whitelist',
-            null,
-            '',
-            'IP白名单'
-        );
-        $form->addInput($whitelist);
-        
-        $uaWhitelist = new Textarea(
-            'uaWhitelist',
-            null,
-            '',
-            'User-Agent白名单'
-        );
-        $form->addInput($uaWhitelist);
-        
-        $urlWhitelist = new Textarea(
-            'urlWhitelist',
-            null,
-            '',
-            'URL白名单'
-        );
-        $form->addInput($urlWhitelist);
-        
-        $accessInterval = new Text(
-            'accessInterval',
-            null,
-            '10',
-            '访问间隔（秒）'
-        );
-        $form->addInput($accessInterval);
-        
-        $blockedRegions = new Textarea(
-            'blockedRegions',
-            null,
-            '',
-            '被禁地区'
-        );
-        $form->addInput($blockedRegions);
-        
-        $sensitiveWords = new Textarea(
-            'sensitiveWords',
-            null,
-            '',
-            '敏感词列表'
-        );
-        $form->addInput($sensitiveWords);
-        
-        $enableSQLProtection = new Checkbox(
-            'enableSQLProtection',
-            ['1' => '启用SQL注入防护'],
-            ['1']
-        );
-        $form->addInput($enableSQLProtection);
-        
-        $enableXSSProtection = new Checkbox(
-            'enableXSSProtection',
-            ['1' => '启用XSS攻击防护'],
-            ['1']
-        );
-        $form->addInput($enableXSSProtection);
-        
-        $enableCSRFProtection = new Checkbox(
-            'enableCSRFProtection',
-            ['1' => '启用CSRF攻击防护'],
-            ['1']
-        );
-        $form->addInput($enableCSRFProtection);
-        
-        $customMessage = new Textarea(
-            'customMessage',
-            null,
-            '抱歉，您的访问被系统安全策略拦截。',
-            '自定义拦截提示'
-        );
-        $form->addInput($customMessage);
-        
-        $debugMode = new Select(
-            'debugMode',
-            [
-                '0' => '关闭',
-                '1' => '开启'
-            ],
-            '0',
-            '调试模式'
-        );
-        $form->addInput($debugMode);
-        
-        $enableLoginCaptcha = new Checkbox(
-            'enableLoginCaptcha',
-            ['1' => '启用登录验证码保护'],
-            []
-        );
-        $form->addInput($enableLoginCaptcha);
-        
-        $enableVisitorLog = new Checkbox(
-            'enableVisitorLog',
-            ['1' => '启用访客日志记录'],
-            ['1'],
-            '访客日志',
-            '记录所有访客访问信息（不包括管理后台和机器人）'
-        );
-        $form->addInput($enableVisitorLog);
-        
-        $botKeywords = new Textarea(
-            'botKeywords',
-            null,
-            "baidu=>百度\ngoogle=>谷歌\nsogou=>搜狗\nyoudao=>有道\nsoso=>搜搜\nbing=>必应\nyahoo=>雅虎\n360=>360搜索",
-            '机器人关键词',
-            '每行一个，格式: 关键词=>显示名称。用于识别搜索引擎爬虫，这些访问不会被记录到访客日志'
-        );
-        $form->addInput($botKeywords);
-        
-        $logRetentionDays = new Text(
-            'logRetentionDays',
-            null,
-            '30',
-            '日志保留天数',
-            '访客日志保留天数，0表示不自动清理'
-        );
-        $form->addInput($logRetentionDays);
-        
-        $adminWhitelist = new Textarea(
-            'adminWhitelist',
-            null,
-            '',
-            '后台访问IP白名单',
-            '每行一个IP或IP段，支持：单个IP、IP范围(1-50)、通配符(*)、CIDR(/24)。留空表示允许所有IP访问后台。'
-        );
-        $form->addInput($adminWhitelist);
-        
-        $adminRedirectUrl = new Text(
-            'adminRedirectUrl',
-            null,
-            '',
-            '非白名单IP重定向URL',
-            '当IP不在白名单时跳转的URL地址，留空则跳转到网站首页'
-        );
-        $form->addInput($adminRedirectUrl);
-        
-        $completeUninstall = new Checkbox(
-            'completeUninstall',
-            ['1' => '启用完整卸载（禁用插件时删除所有数据库表）'],
-            [],
-            '完整卸载',
-            '<strong style="color: #dc3545;">⚠️ 警告：启用此选项后，禁用插件时将删除所有数据库表，包括所有日志记录。此操作不可恢复！</strong><br/>如果您只是临时禁用插件，请不要启用此选项。'
-        );
-        $form->addInput($completeUninstall);
     }
     
     public static function personalConfig(Form $form)
