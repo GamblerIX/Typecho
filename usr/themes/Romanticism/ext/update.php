@@ -1,9 +1,17 @@
 <?php
+/**
+ * 主题更新检查接口
+ * @version 2.2
+ */
 
 header('Content-Type: application/json; charset=utf-8');
 
+// 当前主题版本（更新时只需修改此处）
+define('THEME_VERSION', '2.2');
+
 function checkThemeUpdate()
 {
+    // GitHub 仓库地址（二开项目）
     $api_url = 'https://api.github.com/repos/GamblerIX/Typecho/releases/latest';
     $opts = [
         'http' => [
@@ -22,11 +30,12 @@ function checkThemeUpdate()
         return json_encode(["error" => "无效的更新数据"]);
     }
 
-    $version = ltrim($data['tag_name'], 'v');
+    $latestVersion = ltrim($data['tag_name'], 'v');
 
     return json_encode([
-        "current_version" => '2.2',
-        "latest_version" => $version,
+        "current_version" => THEME_VERSION,
+        "latest_version" => $latestVersion,
+        "has_update" => version_compare($latestVersion, THEME_VERSION, '>'),
         "update_url" => $data['html_url'],
         "feature" => $data['body'] ?? '暂无更新说明'
     ]);

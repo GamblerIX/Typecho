@@ -49,7 +49,7 @@ function themeConfig($form) {  //后台设置界面
                         updateStatus.innerHTML = `<p style="color:Crimson;"><b>${data.error}</b></p>`;
                         checkUpdateBtn.disabled = false;
                     } else {
-                        if (data.current_version !== data.latest_version) {
+                        if (data.has_update) {
                             checkUpdateBtn.disabled = false;
                             updateStatus.innerHTML = `
                                 <p><b>最新版本:</b> ${data.latest_version}</p>
