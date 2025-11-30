@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Get commit message
+        id: commit
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
+          echo "$MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Package Plugin
+        run: |
+          zip -r DPlayerMAX-${{ steps.version.outputs.VERSION }}.zip . \
+            -x ".git/*" ".github/*" "CLAUDE.md"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: DPlayerMAX ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## 更新摘要
+            
+            ${{ steps.commit.outputs.MESSAGE }}
+            
+            ---
+            
+            ## 安装说明
+            
+            1. 下载 `DPlayerMAX-${{ steps.version.outputs.VERSION }}.zip`
+            2. 解压到 `usr/plugins/DPlayerMAX`
+            3. 后台启用插件
+            
+            ## 基本用法
+            
+            ```
+            [dplayer url="视频地址" /]
+            [dplayer url="https://www.bilibili.com/video/BVxxxxx" /]
+            ```
+            
+            ## 参数说明
+            
+            | 参数 | 说明 | 默认值 |
+            |------|------|--------|
+            | url | 视频地址（必填） | - |
+            | pic | 封面图 | - |
+            | autoplay | 自动播放 | false |
+            | loop | 循环播放 | false |
+            | page | B站分P | 1 |
+            | quality | B站清晰度 | 720p |
+            | mode | iframe/dplayer | dplayer |
+          files: DPlayerMAX-${{ steps.version.outputs.VERSION }}.zip
+          draft: false
+          prerelease: false

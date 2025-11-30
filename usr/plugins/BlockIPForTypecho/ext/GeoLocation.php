@@ -153,11 +153,11 @@ class GeoLocation
             }
             
             try {
-                $dbPath = PathHelper::getAssetPath('ip2region/ip2region_v4.xdb');
+                $dbPath = PathHelper::getAssetPath('ext/ip2region/ip2region_v4.xdb');
                 
                 if (!file_exists($dbPath)) {
                     error_log(self::PLUGIN_NAME . " IPv4 database not found: {$dbPath}");
-                    error_log(self::PLUGIN_NAME . " Expected location: " . PathHelper::getAssetPath('ip2region/ip2region_v4.xdb'));
+                    error_log(self::PLUGIN_NAME . " Expected location: " . PathHelper::getAssetPath('ext/ip2region/ip2region_v4.xdb'));
                     return false;
                 }
                 
@@ -173,11 +173,11 @@ class GeoLocation
             }
             
             try {
-                $dbPath = PathHelper::getAssetPath('ip2region/ip2region_v6.xdb');
+                $dbPath = PathHelper::getAssetPath('ext/ip2region/ip2region_v6.xdb');
                 
                 if (!file_exists($dbPath)) {
                     error_log(self::PLUGIN_NAME . " IPv6 database not found: {$dbPath}");
-                    error_log(self::PLUGIN_NAME . " Expected location: " . PathHelper::getAssetPath('ip2region/ip2region_v6.xdb'));
+                    error_log(self::PLUGIN_NAME . " Expected location: " . PathHelper::getAssetPath('ext/ip2region/ip2region_v6.xdb'));
                     return false;
                 }
                 

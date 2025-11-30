@@ -80,10 +80,10 @@ if (!defined('__TYPECHO_ADMIN__') && !defined('__TYPECHO_ROOT_DIR__')) {
 
 // 包含 Typecho 后台标准文件以保留导航菜单
 // 使用相对路径从插件目录导航到 Typecho 根目录，避免 open_basedir 限制
-// 插件路径：usr/plugins/BlockIPForTypecho/codes/base/Console.php
+// 插件路径：usr/plugins/BlockIPForTypecho/ext/Console.php
 // 目标路径：admin/common.php
-// 相对路径：../../../../../admin/ (向上5级到根目录)
-$adminPath = __DIR__ . '/../../../../../admin/';
+// 相对路径：../../../../admin/ (向上4级到根目录)
+$adminPath = __DIR__ . '/../../../../admin/';
 
 require_once $adminPath . 'common.php';
 require_once $adminPath . 'header.php';

@@ -44,6 +44,6 @@ class PathHelper
     
     public static function getConsolePanelPath(): string
     {
-        return 'BlockIPForTypecho/codes/base/Console.php';
+        return 'BlockIPForTypecho/ext/Console.php';
     }
 }

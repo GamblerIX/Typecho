@@ -28,25 +28,25 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
     exit;
 }
 
-require_once __DIR__ . '/codes/base/Adapter.php';
-require_once __DIR__ . '/ip2region/Searcher.class.php';
+require_once __DIR__ . '/ext/Adapter.php';
+require_once __DIR__ . '/ext/ip2region/Searcher.class.php';
 use ip2region\xdb\Searcher;
 use ip2region\xdb\IPv4;
 use ip2region\xdb\IPv6;
 
-require_once __DIR__ . '/codes/base/Database.php';
-require_once __DIR__ . '/codes/base/Logger.php';
-require_once __DIR__ . '/codes/base/GeoLocation.php';
-require_once __DIR__ . '/codes/base/IPAccessControl.php';
-require_once __DIR__ . '/codes/base/SecurityDetector.php';
-require_once __DIR__ . '/codes/base/SmartDetector.php';
-require_once __DIR__ . '/codes/base/VisitorStats.php';
-require_once __DIR__ . '/codes/base/BlockHandler.php';
-require_once __DIR__ . '/codes/base/PathHelper.php';
-require_once __DIR__ . '/codes/base/CaptchaHelper.php';
-require_once __DIR__ . '/codes/base/SecurityHelper.php';
-require_once __DIR__ . '/codes/base/SelfCheck.php';
-require_once __DIR__ . '/codes/base/AllowAdminIP.php';
+require_once __DIR__ . '/ext/Database.php';
+require_once __DIR__ . '/ext/Logger.php';
+require_once __DIR__ . '/ext/GeoLocation.php';
+require_once __DIR__ . '/ext/IPAccessControl.php';
+require_once __DIR__ . '/ext/SecurityDetector.php';
+require_once __DIR__ . '/ext/SmartDetector.php';
+require_once __DIR__ . '/ext/VisitorStats.php';
+require_once __DIR__ . '/ext/BlockHandler.php';
+require_once __DIR__ . '/ext/PathHelper.php';
+require_once __DIR__ . '/ext/CaptchaHelper.php';
+require_once __DIR__ . '/ext/SecurityHelper.php';
+require_once __DIR__ . '/ext/SelfCheck.php';
+require_once __DIR__ . '/ext/AllowAdminIP.php';
 
 class Plugin implements PluginInterface
 {

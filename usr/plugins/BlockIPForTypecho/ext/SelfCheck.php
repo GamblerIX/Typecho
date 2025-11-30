@@ -157,19 +157,19 @@ class SelfCheck
         
         $requiredFiles = [
             'Plugin.php' => '插件主文件',
-            'codes/base/Database.php' => '数据库模块',
-            'codes/base/Logger.php' => '日志模块',
-            'codes/base/GeoLocation.php' => '地理位置模块',
-            'codes/base/IPAccessControl.php' => 'IP访问控制模块',
-            'codes/base/SecurityDetector.php' => '安全检测模块',
-            'codes/base/SmartDetector.php' => '智能检测模块',
-            'codes/base/VisitorStats.php' => '访客统计模块',
-            'codes/base/BlockHandler.php' => '拦截处理模块',
-            'codes/base/Console.php' => '控制台面板',
-            'codes/base/PathHelper.php' => '路径辅助类',
-            'codes/base/CaptchaHelper.php' => '验证码辅助类',
-            'codes/base/SecurityHelper.php' => '安全辅助类',
-            'ip2region/Searcher.class.php' => 'IP地理位置库'
+            'ext/Database.php' => '数据库模块',
+            'ext/Logger.php' => '日志模块',
+            'ext/GeoLocation.php' => '地理位置模块',
+            'ext/IPAccessControl.php' => 'IP访问控制模块',
+            'ext/SecurityDetector.php' => '安全检测模块',
+            'ext/SmartDetector.php' => '智能检测模块',
+            'ext/VisitorStats.php' => '访客统计模块',
+            'ext/BlockHandler.php' => '拦截处理模块',
+            'ext/Console.php' => '控制台面板',
+            'ext/PathHelper.php' => '路径辅助类',
+            'ext/CaptchaHelper.php' => '验证码辅助类',
+            'ext/SecurityHelper.php' => '安全辅助类',
+            'ext/ip2region/Searcher.class.php' => 'IP地理位置库'
         ];
         
         $pluginDir = __DIR__ . '/../../';
@@ -289,7 +289,7 @@ class SelfCheck
         
         // 检查目录可写性
         $writableDirs = [
-            'ip2region' => 'IP地理位置数据目录'
+            'ext/ip2region' => 'IP地理位置数据目录'
         ];
         
         foreach ($writableDirs as $dir => $description) {
