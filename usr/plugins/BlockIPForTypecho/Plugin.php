@@ -45,7 +45,6 @@ require_once __DIR__ . '/ext/BlockHandler.php';
 require_once __DIR__ . '/ext/PathHelper.php';
 require_once __DIR__ . '/ext/CaptchaHelper.php';
 require_once __DIR__ . '/ext/SecurityHelper.php';
-require_once __DIR__ . '/ext/SelfCheck.php';
 require_once __DIR__ . '/ext/AllowAdminIP.php';
 
 class Plugin implements PluginInterface
@@ -72,24 +71,8 @@ class Plugin implements PluginInterface
             
             Database::createTables();
             Database::ensureIndexes();
-            
-            $selfCheckResults = SelfCheck::runFullCheck();
-            $message = self::PLUGIN_NAME . ' v' . self::VERSION . ' 激活成功！';
-            
-            if (!$selfCheckResults['success']) {
-                $errorCount = count($selfCheckResults['errors']);
-                $warningCount = count($selfCheckResults['warnings']);
-                $message .= "<br/><br/><strong>⚠️ 自检发现 {$errorCount} 个错误";
-                if ($warningCount > 0) {
-                    $message .= "，{$warningCount} 个警告";
-                }
-                $message .= "</strong><br/>";
-                $message .= '<a href="' . \Helper::options()->adminUrl . 'extending.php?panel=' . PathHelper::getConsolePanelPath() . '&tab=selfcheck" style="color: #dc3545;">查看详细自检报告 →</a>';
-            } else {
-                $message .= '<br/><span style="color: #28a745;">✓ 自检通过，所有功能正常</span>';
-            }
-            
-            return $message;
+
+            return self::PLUGIN_NAME . ' v' . self::VERSION . ' 激活成功！';
         } catch (\Exception $e) {
             throw new \Typecho\Plugin\Exception('插件激活失败: ' . $e->getMessage() . ' (文件: ' . $e->getFile() . ', 行: ' . $e->getLine() . ')');
         }

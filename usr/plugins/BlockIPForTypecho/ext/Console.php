@@ -16,13 +16,11 @@ require_once __DIR__ . '/../Plugin.php';
 require_once __DIR__ . '/PathHelper.php';
 require_once __DIR__ . '/VisitorStats.php';
 require_once __DIR__ . '/Database.php';
-require_once __DIR__ . '/SelfCheck.php';
 require_once __DIR__ . '/ErrorDiagnostic.php';
 use TypechoPlugin\BlockIPForTypecho\Plugin;
 use TypechoPlugin\BlockIPForTypecho\PathHelper;
 use TypechoPlugin\BlockIPForTypecho\VisitorStats;
 use TypechoPlugin\BlockIPForTypecho\Database;
-use TypechoPlugin\BlockIPForTypecho\SelfCheck;
 use TypechoPlugin\BlockIPForTypecho\ErrorDiagnostic;
 
 $isAjaxRequest = isset($_GET['action']) && $_GET['action'] === 'get_ip_history';
@@ -77,7 +75,7 @@ $action = $request->get('action', '');
 
 require_once $adminPath . 'header.php';
 require_once $adminPath . 'menu.php';
-$allowedTabs = ['security', 'visitors', 'bots', 'audit', 'selfcheck'];
+$allowedTabs = ['security', 'visitors', 'bots', 'audit'];
 $tab = $request->get('tab', 'security');
 if (!in_array($tab, $allowedTabs)) {
     $tab = 'security';
@@ -92,40 +90,6 @@ $options = Widget_Options::alloc();
 $pluginOptions = $options->plugin('BlockIPForTypecho');
 $success_message = '';
 $error_message = '';
-if ($action === 'run_selfcheck' && $request->isPost()) {
-    try {
-        $results = SelfCheck::runFullCheck();
-        if ($results['success']) {
-            $success_message = "✓ 自检完成：所有检查通过";
-        } else {
-            $errorCount = count($results['errors']);
-            $warningCount = count($results['warnings']);
-            $error_message = "⚠️ 自检完成：";
-            $parts = [];
-            if ($errorCount > 0) {
-                $parts[] = "发现 {$errorCount} 个错误";
-            }
-            if ($warningCount > 0) {
-                $parts[] = "{$warningCount} 个警告";
-            }
-            $error_message .= implode('，', $parts);
-            if ($warningCount > 0 && !empty($results['warnings'])) {
-                $error_message .= "<br/><br/><strong>警告详情：</strong><br/>";
-                foreach ($results['warnings'] as $warning) {
-                    $error_message .= "• " . htmlspecialchars($warning) . "<br/>";
-                }
-            }
-            if ($errorCount > 0 && !empty($results['errors'])) {
-                $error_message .= "<br/><strong>错误详情：</strong><br/>";
-                foreach ($results['errors'] as $error) {
-                    $error_message .= "• " . htmlspecialchars($error) . "<br/>";
-                }
-            }
-        }
-    } catch (Exception $e) {
-        $error_message = "自检失败: " . $e->getMessage();
-    }
-}
 if ($action === 'clear_logs' && $request->isPost()) {
     try {
         $db->query($db->delete($prefix . 'blockip_logs'));
@@ -471,7 +435,6 @@ if ($tab === 'security') {
         <a href="<?php echo PathHelper::getConsolePanelUrl('visitors'); ?>" class="<?php echo $tab === 'visitors' ? 'active' : ''; ?>">访客日志</a>
         <a href="<?php echo PathHelper::getConsolePanelUrl('bots'); ?>" class="<?php echo $tab === 'bots' ? 'active' : ''; ?>">机器人管理</a>
         <a href="<?php echo PathHelper::getConsolePanelUrl('audit'); ?>" class="<?php echo $tab === 'audit' ? 'active' : ''; ?>">网站审计</a>
-        <a href="<?php echo PathHelper::getConsolePanelUrl('selfcheck'); ?>" class="<?php echo $tab === 'selfcheck' ? 'active' : ''; ?>">🔍 自检报告</a>
     </div>
     
     <?php if ($success_message): ?>
@@ -901,22 +864,7 @@ if ($tab === 'security') {
             }
         });
         </script>
-        
-    <?php elseif ($tab === 'selfcheck'): ?>
-        <!-- 自检报告标签页 -->
-        
-        <div class="chart-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2>🔍 插件自检报告</h2>
-                <form method="post" style="display: inline;">
-                    <input type="hidden" name="action" value="run_selfcheck">
-                    <button type="submit" class="btn">🔄 重新运行自检</button>
-                </form>
-            </div>
-            
-            <?php echo SelfCheck::generateHTMLReport(); ?>
-        </div>
-        
+
     <?php endif; ?>
     
     <script>
