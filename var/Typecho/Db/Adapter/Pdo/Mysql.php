@@ -68,7 +68,10 @@ class Mysql extends Pdo
             $config->password,
             $options
         );
-        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+        $pdo->setAttribute(defined('\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY')
+            ? \Pdo\Mysql::ATTR_USE_BUFFERED_QUERY
+            : \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
         if ($config->charset) {
             $pdo->exec("SET NAMES '{$config->charset}'");

@@ -405,7 +405,7 @@ class Comments extends Base implements QueryInterface
      */
     protected function ___title(): ?string
     {
-        return $this->parentContent['title'];
+        return $this->parentContent['title'] ?? null;
     }
 
     /**
@@ -475,7 +475,7 @@ class Comments extends Base implements QueryInterface
      */
     protected function ___content(): ?string
     {
-        $text = $this->parentContent['hidden'] ? _t('内容被隐藏') : $this->text;
+        $text = (!empty($this->parentContent) && !empty($this->parentContent['hidden'])) ? _t('内容被隐藏') : $this->text;
 
         $text = Comments::pluginHandle()->trigger($plugged)->content($text, $this);
         if (!$plugged) {
